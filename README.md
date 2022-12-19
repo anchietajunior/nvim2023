@@ -8,4 +8,4 @@
 
 ### Neovim
 
-(Neovim Repository)[https://github.com/neovim/neovim]
+[Neovim Repository](https://github.com/neovim/neovim)
