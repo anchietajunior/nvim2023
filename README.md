@@ -9,3 +9,13 @@
 ### Neovim
 
 [Neovim Repository](https://github.com/neovim/neovim)
+
+### Neovim Kickstart
+
+[Kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
+
+### Packer
+### LSP (Language Server Protocol)
+### Mason
+### UltiSnips
+### Harpoon
