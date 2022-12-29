@@ -61,6 +61,10 @@ require('packer').startup(function(use)
 
   use 'RRethy/nvim-treesitter-endwise'
 
+  -- BarBar
+  use 'nvim-tree/nvim-web-devicons'
+  use {'romgrk/barbar.nvim', wants = 'nvim-web-devicons'}
+
   -- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
   if has_plugins then
@@ -451,6 +455,13 @@ require('nvim-treesitter.configs').setup {
         enable = true,
     },
 }
+
+-- Move to previous/next
+vim.keymap.set("n", ",1", ":BufferPrevious<CR>")
+vim.keymap.set("n", ",2", ":BufferNext<CR>")
+
+-- Personal maps
+vim.keymap.set("n", "<leader>c", ":bd<CR>")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
