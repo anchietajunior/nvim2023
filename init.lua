@@ -65,6 +65,19 @@ require('packer').startup(function(use)
   use 'nvim-tree/nvim-web-devicons'
   use {'romgrk/barbar.nvim', wants = 'nvim-web-devicons'}
 
+  -- Nvim-tree
+  use {
+    'nvim-tree/nvim-tree.lua',
+    requires = {
+      'nvim-tree/nvim-web-devicons', -- optional, for file icons
+    },
+    tag = 'nightly' -- optional, updated every week. (see issue #1193)
+  }
+
+  use 'sheerun/vim-polyglot'
+
+  use { 'vim-test/vim-test', requires = { 'nvim-telescope/telescope.nvim' } }
+
   -- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
   if has_plugins then
@@ -106,6 +119,8 @@ vim.o.hlsearch = false
 -- Make line numbers default
 vim.wo.number = true
 vim.o.relativenumber = true
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -187,7 +202,7 @@ require('gitsigns').setup {
     delete = { text = '_' },
     topdelete = { text = '‾' },
     changedelete = { text = '~' },
-  },
+  }
 }
 
 -- [[ Configure Telescope ]]
@@ -300,7 +315,7 @@ require('nvim-treesitter.configs').setup {
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '<leader>se', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
 -- LSP settings.
@@ -357,7 +372,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'rust_analyzer', 'tsserver', 'sumneko_lua', 'solargraph' }
+local servers = { 'clangd', 'rust_analyzer', 'tsserver', 'lua_ls', 'solargraph', 'yamlls' }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -375,6 +390,16 @@ for _, lsp in ipairs(servers) do
   }
 end
 
+require('lspconfig').yamlls.setup {
+  settings = {
+    yaml = {
+      schemas = {
+        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*"
+      },
+    },
+  }
+}
+
 -- Turn on lsp status information
 require('fidget').setup()
 
@@ -385,7 +410,7 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-require('lspconfig').sumneko_lua.setup {
+require('lspconfig').lua_ls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
@@ -463,5 +488,46 @@ vim.keymap.set("n", ",2", ":BufferNext<CR>")
 -- Personal maps
 vim.keymap.set("n", "<leader>c", ":bd<CR>")
 
+-- examples for your init.lua
+
+-- disable netrw at the very start of your init.lua (strongly advised)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- set termguicolors to enable highlight groups
+vim.opt.termguicolors = true
+
+-- empty setup using defaults
+require("nvim-tree").setup()
+
+-- OR setup with some options
+require("nvim-tree").setup({
+  sort_by = "case_sensitive",
+  view = {
+    adaptive_size = true,
+    mappings = {
+      list = {
+        { key = "u", action = "dir_up" },
+      },
+    },
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = true,
+  },
+})
+
+vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>")
+
+vim.cmd("let test#strategy = 'neovim'")
+
+-- Test with RSPEC
+vim.keymap.set('n', '<leader>tn', ":TestNearest<CR>")
+vim.keymap.set('n', '<leader>tf', ":TestFile<CR>")
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+require('gitsigns').setup()
